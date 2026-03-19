@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VAULT — Investor Access</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0A0A0C;
+    --surface: #111114;
+    --surface-2: #18181C;
+    --surface-3: #222228;
+    --border: #2A2A32;
+    --border-light: #3A3A44;
+    --text: #E8E6E3;
+    --text-muted: #8A8890;
+    --text-dim: #5A5A64;
+    --accent: #C9A84C;
+    --accent-light: #E0C670;
+    --accent-dim: #8A7230;
+    --green: #4ADE80;
+    --red: #F87171;
+    --serif: 'Cormorant Garamond', Georgia, serif;
+    --sans: 'DM Sans', -apple-system, sans-serif;
+    --mono: 'JetBrains Mono', monospace;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    pointer-events: none;
+    opacity: 0.03;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    padding: 20px 48px; display: flex; justify-content: space-between; align-items: center;
+    backdrop-filter: blur(24px); background: rgba(10,10,12,0.7);
+    border-bottom: 1px solid rgba(42,42,50,0.5);
+  }
+
+  .logo { font-family: var(--serif); font-size: 28px; font-weight: 300; letter-spacing: 8px; color: var(--accent); text-transform: uppercase; }
+  .logo span { font-weight: 600; }
+  .nav-links { display: flex; gap: 36px; align-items: center; }
+  .nav-links a { color: var(--text-muted); text-decoration: none; font-size: 13px; letter-spacing: 1.5px; text-transform: uppercase; font-weight: 500; transition: color 0.3s; }
+  .nav-links a:hover { color: var(--text); }
+  .nav-cta { background: var(--accent) !important; color: var(--bg) !important; padding: 10px 24px; border-radius: 2px; font-weight: 600 !important; cursor: pointer; transition: all 0.3s; }
+  .nav-cta:hover { background: var(--accent-light) !important; transform: translateY(-1px); }
+
+  .hero {
+    min-height: 100vh; display: flex; flex-direction: column; justify-content: center;
+    align-items: center; text-align: center; padding: 120px 48px 80px; position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: ''; position: absolute; top: -200px; left: 50%; transform: translateX(-50%);
+    width: 800px; height: 800px; background: radial-gradient(circle, rgba(201,168,76,0.06) 0%, transparent 70%); pointer-events: none;
+  }
+  .hero-tag { font-family: var(--mono); font-size: 11px; letter-spacing: 4px; text-transform: uppercase; color: var(--accent); margin-bottom: 32px; opacity: 0; animation: fadeUp 0.8s 0.3s forwards; }
+  .hero h1 { font-family: var(--serif); font-size: clamp(48px, 7vw, 96px); font-weight: 300; line-height: 1.05; max-width: 900px; letter-spacing: -1px; opacity: 0; animation: fadeUp 0.8s 0.5s forwards; }
+  .hero h1 em { font-style: italic; color: var(--accent); font-weight: 400; }
+  .hero-sub { margin-top: 28px; font-size: 17px; color: var(--text-muted); max-width: 560px; line-height: 1.7; opacity: 0; animation: fadeUp 0.8s 0.7s forwards; }
+  .hero-stats { display: flex; gap: 64px; margin-top: 64px; opacity: 0; animation: fadeUp 0.8s 0.9s forwards; }
+  .hero-stat h3 { font-family: var(--serif); font-size: 42px; font-weight: 300; color: var(--accent); }
+  .hero-stat p { font-size: 12px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 2px; margin-top: 4px; }
+  .scroll-indicator { position: absolute; bottom: 40px; display: flex; flex-direction: column; align-items: center; gap: 8px; opacity: 0; animation: fadeUp 0.8s 1.2s forwards; }
+  .scroll-indicator span { font-size: 10px; letter-spacing: 3px; text-transform: uppercase; color: var(--text-dim); }
+  .scroll-line { width: 1px; height: 40px; background: linear-gradient(to bottom, var(--accent), transparent); animation: scrollPulse 2s infinite; }
+  @keyframes scrollPulse { 0%, 100% { opacity: 0.3; transform: scaleY(1); } 50% { opacity: 1; transform: scaleY(1.2); } }
+
+  section { padding: 120px 48px; max-width: 1400px; margin: 0 auto; }
+  .section-header { text-align: center; margin-bottom: 80px; }
+  .section-tag { font-family: var(--mono); font-size: 11px; letter-spacing: 4px; text-transform: uppercase; color: var(--accent); display: block; margin-bottom: 16px; }
+  .section-header h2 { font-family: var(--serif); font-size: clamp(32px, 4vw, 52px); font-weight: 300; line-height: 1.15; }
+  .section-header p { margin-top: 16px; color: var(--text-muted); max-width: 540px; margin-left: auto; margin-right: auto; line-height: 1.7; }
+
+  .investors-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(400px, 1fr)); gap: 28px; }
+
+  .investor-card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 6px;
+    overflow: hidden; transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative; display: flex; flex-direction: column;
+  }
+  .investor-card:hover { border-color: var(--accent-dim); transform: translateY(-4px); box-shadow: 0 24px 48px rgba(0,0,0,0.3), 0 0 0 1px rgba(201,168,76,0.1); }
+  .investor-card::after { content: ''; position: absolute; inset: 0; background: linear-gradient(135deg, rgba(201,168,76,0.03), transparent); opacity: 0; transition: opacity 0.4s; pointer-events: none; }
+  .investor-card:hover::after { opacity: 1; }
+
+  .card-top { padding: 32px 28px 20px; display: flex; gap: 20px; align-items: flex-start; }
+  .avatar { width: 72px; height: 72px; border-radius: 50%; flex-shrink: 0; position: relative; overflow: visible; background: var(--surface-2); }
+  .avatar-initials { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-family: var(--serif); font-size: 26px; font-weight: 600; border-radius: 50%; }
+  .avatar-ring { position: absolute; inset: -3px; border-radius: 50%; border: 1.5px solid rgba(201,168,76,0.35); pointer-events: none; }
+  .card-info h3 { font-size: 20px; font-weight: 600; letter-spacing: 0.3px; margin-bottom: 4px; }
+  .card-info .title { font-size: 13px; color: var(--accent); font-weight: 500; line-height: 1.5; }
+  .card-bio { padding: 0 28px 20px; font-size: 14px; color: var(--text-muted); line-height: 1.7; }
+
+  .card-check-size { padding: 0 28px 16px; display: flex; align-items: center; gap: 10px; }
+  .check-badge { display: inline-flex; align-items: center; gap: 7px; padding: 7px 16px; background: rgba(201,168,76,0.08); border: 1px solid rgba(201,168,76,0.2); border-radius: 100px; font-family: var(--mono); font-size: 13px; color: var(--accent-light); letter-spacing: 0.5px; }
+  .check-badge .label { font-family: var(--sans); font-size: 11px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; }
+
+  .card-details { padding: 0 28px 24px; display: flex; flex-wrap: wrap; gap: 8px; }
+  .detail-chip { font-size: 11px; padding: 6px 14px; background: var(--surface-2); border: 1px solid var(--border); border-radius: 100px; color: var(--text-muted); letter-spacing: 0.3px; }
+
+  .card-footer { margin-top: auto; padding: 16px 28px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+  .card-footer .status { font-size: 12px; color: var(--green); display: flex; align-items: center; gap: 6px; }
+  .status-dot { width: 6px; height: 6px; background: var(--green); border-radius: 50%; animation: pulse 2s infinite; }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+  .btn-book-call { padding: 8px 20px; background: var(--accent); color: var(--bg); border: none; border-radius: 3px; font-family: var(--sans); font-size: 12px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; cursor: pointer; transition: all 0.3s; position: relative; z-index: 1; }
+  .btn-book-call:hover { background: var(--accent-light); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(201,168,76,0.25); }
+
+  .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 48px; margin-top: 80px; position: relative; }
+  .steps::before { content: ''; position: absolute; top: 40px; left: 15%; right: 15%; height: 1px; background: linear-gradient(to right, transparent, var(--border), transparent); }
+  .step { text-align: center; position: relative; }
+  .step-num { width: 80px; height: 80px; margin: 0 auto 28px; display: flex; align-items: center; justify-content: center; font-family: var(--serif); font-size: 32px; font-weight: 300; color: var(--accent); border: 1px solid var(--border); border-radius: 50%; background: var(--surface); position: relative; z-index: 1; }
+  .step h3 { font-size: 16px; font-weight: 600; margin-bottom: 12px; letter-spacing: 0.5px; }
+  .step p { font-size: 14px; color: var(--text-muted); line-height: 1.7; max-width: 280px; margin: 0 auto; }
+
+  .pricing-card { max-width: 520px; margin: 0 auto; background: var(--surface); border: 1px solid var(--accent-dim); border-radius: 4px; padding: 56px 48px; text-align: center; position: relative; overflow: hidden; }
+  .pricing-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(to right, transparent, var(--accent), transparent); }
+  .pricing-card::after { content: ''; position: absolute; top: -100px; left: 50%; transform: translateX(-50%); width: 400px; height: 400px; background: radial-gradient(circle, rgba(201,168,76,0.04) 0%, transparent 70%); pointer-events: none; }
+  .pricing-label { font-family: var(--mono); font-size: 11px; letter-spacing: 4px; text-transform: uppercase; color: var(--accent); margin-bottom: 24px; }
+  .pricing-amount { font-family: var(--serif); font-size: 72px; font-weight: 300; color: var(--text); line-height: 1; }
+  .pricing-amount span { font-size: 28px; color: var(--text-muted); vertical-align: super; }
+  .pricing-period { font-size: 14px; color: var(--text-dim); margin-top: 8px; margin-bottom: 32px; }
+  .pricing-features { text-align: left; margin-bottom: 40px; }
+  .pricing-feature { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid rgba(42,42,50,0.5); font-size: 14px; color: var(--text-muted); }
+  .pricing-feature .check { color: var(--accent); font-size: 16px; }
+  .btn-primary { width: 100%; padding: 18px; background: var(--accent); color: var(--bg); border: none; border-radius: 3px; font-family: var(--sans); font-size: 15px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; cursor: pointer; transition: all 0.3s; position: relative; z-index: 1; }
+  .btn-primary:hover { background: var(--accent-light); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(201,168,76,0.2); }
+
+  .modal-overlay { display: none; position: fixed; inset: 0; z-index: 1000; background: rgba(0,0,0,0.8); backdrop-filter: blur(8px); justify-content: center; align-items: center; opacity: 0; transition: opacity 0.3s; }
+  .modal-overlay.active { display: flex; opacity: 1; }
+  .modal { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; width: 480px; max-width: 92vw; max-height: 90vh; overflow-y: auto; position: relative; transform: translateY(20px); transition: transform 0.3s; }
+  .modal-overlay.active .modal { transform: translateY(0); }
+  .modal-close { position: absolute; top: 16px; right: 16px; background: none; border: none; color: var(--text-dim); font-size: 20px; cursor: pointer; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; transition: color 0.2s; }
+  .modal-close:hover { color: var(--text); }
+  .modal-header { padding: 36px 36px 0; text-align: center; }
+  .modal-header h2 { font-family: var(--serif); font-size: 28px; font-weight: 400; }
+  .modal-header p { color: var(--text-muted); font-size: 14px; margin-top: 8px; line-height: 1.6; }
+
+  .modal-investor-preview { display: flex; align-items: center; gap: 14px; margin: 24px 36px 0; padding: 16px 20px; background: var(--surface-2); border: 1px solid var(--border); border-radius: 6px; }
+  .modal-investor-preview .mini-avatar { width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: var(--serif); font-size: 18px; font-weight: 600; flex-shrink: 0; }
+  .modal-investor-preview .mini-info h4 { font-size: 15px; font-weight: 600; }
+  .modal-investor-preview .mini-info p { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+
+  .modal-body { padding: 28px 36px 36px; }
+  .form-group { margin-bottom: 20px; }
+  .form-group label { display: block; font-size: 12px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-dim); margin-bottom: 8px; font-weight: 500; }
+  .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 14px 16px; background: var(--surface-2); border: 1px solid var(--border); border-radius: 3px; color: var(--text); font-family: var(--sans); font-size: 14px; transition: border-color 0.2s; outline: none; }
+  .form-group select option { background: var(--surface-2); color: var(--text); }
+  .form-group textarea { resize: vertical; min-height: 100px; }
+  .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--accent-dim); }
+  .form-group input::placeholder, .form-group textarea::placeholder { color: var(--text-dim); }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+  .btn-submit { width: 100%; padding: 18px; background: var(--accent); color: var(--bg); border: none; border-radius: 3px; font-family: var(--sans); font-size: 15px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; cursor: pointer; transition: all 0.3s; margin-top: 8px; }
+  .btn-submit:hover { background: var(--accent-light); }
+  .btn-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  .success-state { display: none; text-align: center; padding: 48px 36px; }
+  .success-state.active { display: block; }
+  .success-icon { width: 80px; height: 80px; margin: 0 auto 24px; border-radius: 50%; background: rgba(74,222,128,0.1); display: flex; align-items: center; justify-content: center; font-size: 36px; }
+  .success-state h2 { font-family: var(--serif); font-size: 28px; font-weight: 400; margin-bottom: 12px; }
+  .success-state p { color: var(--text-muted); font-size: 14px; line-height: 1.7; max-width: 360px; margin: 0 auto; }
+
+  .error-msg { color: var(--red); font-size: 13px; text-align: center; margin-top: 12px; display: none; }
+
+  footer { padding: 48px; border-top: 1px solid var(--border); text-align: center; }
+  footer p { font-size: 13px; color: var(--text-dim); letter-spacing: 0.5px; }
+  footer .footer-logo { font-family: var(--serif); font-size: 18px; color: var(--accent); letter-spacing: 6px; text-transform: uppercase; margin-bottom: 12px; font-weight: 300; }
+
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+  .fade-in { opacity: 0; transform: translateY(24px); transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
+  .fade-in.visible { opacity: 1; transform: translateY(0); }
+
+  @media (max-width: 768px) {
+    nav { padding: 16px 24px; }
+    .nav-links { display: none; }
+    section { padding: 80px 24px; }
+    .hero { padding: 120px 24px 80px; }
+    .hero-stats { gap: 32px; flex-wrap: wrap; justify-content: center; }
+    .investors-grid { grid-template-columns: 1fr; }
+    .steps { grid-template-columns: 1fr; gap: 40px; }
+    .steps::before { display: none; }
+    .pricing-card { padding: 40px 28px; }
+    .modal-body { padding: 24px; }
+    .form-row { grid-template-columns: 1fr; }
+    .modal-investor-preview { margin: 24px 24px 0; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo"><span>V</span>AULT</div>
+  <div class="nav-links">
+    <a href="#investors">Investors</a>
+    <a href="#how">How It Works</a>
+    <a href="#pricing">Pricing</a>
+    <a href="#" class="nav-cta" onclick="openModal()">Book a Call</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="hero-tag">Direct Access to Active Investors</div>
+  <h1>Book a call with the investors shaping <em>tomorrow</em></h1>
+  <p class="hero-sub">Browse verified investor profiles, explore their focus areas and check sizes, then book a one-on-one call to pitch your venture directly.</p>
+  <div class="hero-stats">
+    <div class="hero-stat"><h3>9</h3><p>Active investors</p></div>
+    <div class="hero-stat"><h3>$10K–100K</h3><p>Check sizes</p></div>
+    <div class="hero-stat"><h3>$500</h3><p>Per call booking</p></div>
+  </div>
+  <div class="scroll-indicator"><span>Explore</span><div class="scroll-line"></div></div>
+</section>
+
+<section id="investors">
+  <div class="section-header">
+    <span class="section-tag">Our Investors</span>
+    <h2>Meet the Network</h2>
+    <p>Browse full investor profiles below. When you find the right fit, book a $500 one-on-one call to pitch your venture directly.</p>
+  </div>
+  <div class="investors-grid" id="investorGrid"></div>
+</section>
+
+<section id="how">
+  <div class="section-header">
+    <span class="section-tag">The Process</span>
+    <h2>How It Works</h2>
+  </div>
+  <div class="steps">
+    <div class="step fade-in"><div class="step-num">1</div><h3>Browse Profiles</h3><p>Explore full investor profiles — backgrounds, focus areas, and check sizes — to find the right fit for your venture.</p></div>
+    <div class="step fade-in"><div class="step-num">2</div><h3>Book Your Call</h3><p>Select an investor and submit your booking request. You'll receive a confirmation and scheduling link within 24 hours.</p></div>
+    <div class="step fade-in"><div class="step-num">3</div><h3>Pitch Directly</h3><p>Get a dedicated 30-minute one-on-one call to present your opportunity and discuss potential investment.</p></div>
+  </div>
+</section>
+
+<section id="pricing">
+  <div class="section-header">
+    <span class="section-tag">Pricing</span>
+    <h2>One Fee. Direct Access.</h2>
+  </div>
+  <div class="pricing-card fade-in">
+    <div class="pricing-label">Per Call Booking</div>
+    <div class="pricing-amount"><span>$</span>500</div>
+    <div class="pricing-period">per investor call</div>
+    <div class="pricing-features">
+      <div class="pricing-feature"><span class="check">✦</span> 30-minute one-on-one call</div>
+      <div class="pricing-feature"><span class="check">✦</span> Direct access to the investor</div>
+      <div class="pricing-feature"><span class="check">✦</span> Pitch your venture live</div>
+      <div class="pricing-feature"><span class="check">✦</span> Scheduling within 24 hours</div>
+      <div class="pricing-feature"><span class="check">✦</span> Follow-up intro if there's mutual interest</div>
+      <div class="pricing-feature"><span class="check">✦</span> Check sizes from $10K – $100K</div>
+    </div>
+    <button class="btn-primary" onclick="openModal()">Book a Call — $500</button>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-logo">VAULT</div>
+  <p>&copy; 2026 Vault Investor Network. All rights reserved.</p>
+</footer>
+
+<!-- BOOKING MODAL -->
+<div class="modal-overlay" id="bookingModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">&times;</button>
+    <div id="formState">
+      <div class="modal-header">
+        <h2>Book a Call</h2>
+        <p>Fill in your details and select an investor. We'll send you a scheduling link within 24 hours.</p>
+      </div>
+      <div id="investorPreview"></div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label>Select Investor</label>
+          <select id="investorSelect"><option value="">Choose an investor...</option></select>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>First Name</label><input type="text" id="firstName" placeholder="James"></div>
+          <div class="form-group"><label>Last Name</label><input type="text" id="lastName" placeholder="Chen"></div>
+        </div>
+        <div class="form-group"><label>Email Address</label><input type="email" id="email" placeholder="james@company.com"></div>
+        <div class="form-group"><label>Company / Venture</label><input type="text" id="company" placeholder="Your startup or venture name"></div>
+        <div class="form-group"><label>Brief Pitch</label><textarea id="pitch" placeholder="What does your venture do? What stage are you at? What are you raising?"></textarea></div>
+        <button class="btn-submit" id="submitBtn" onclick="handleSubmit()">Submit Booking Request</button>
+        <div class="error-msg" id="errorMsg">Please fill in all required fields.</div>
+      </div>
+    </div>
+    <div class="success-state" id="successState">
+      <div class="success-icon">✓</div>
+      <h2>Request Submitted</h2>
+      <p>Thanks for your interest! We'll review your request and send a scheduling link to your email within 24 hours.</p>
+    </div>
+  </div>
+</div>
+
+
+<script>
+const investors = [
+  { firstName: "Kevin", initials: "KW", color: "#C9A84C", title: "Founder, Raid the Room · Tech Entrepreneur & Angel Investor", bio: "Data & coding enthusiast turned serial entrepreneur. Founder of Raid the Room — a 2D metaverse events platform with $2M+ in corporate engagements. Active angel investor in early-stage tech startups with a passion for innovative digital experiences.", checkSize: "$50K – $100K", tags: ["Tech", "Metaverse", "Angel Investor", "Burlington"] },
+  { firstName: "Micah", initials: "MN", color: "#6B8AFF", title: "Software Engineer & Investor", bio: "Software engineer with a talent for turning complex problems into elegant solutions. Active in technology investments and early-stage startup ecosystems with a focus on scalable software products.", checkSize: "$50K – $100K", tags: ["Software", "Tech", "Early Stage"] },
+  { firstName: "Victor", initials: "VA", color: "#4ADE80", title: "Investor · Wake Forest University", bio: "Investor with deep ties to the academic and research community. Background spanning analytical research and strategic capital deployment across emerging sectors and growth-stage companies.", checkSize: "$10K – $50K", tags: ["Research", "Strategy", "Emerging Markets"] },
+  { firstName: "Abdul Rauf", initials: "AR", color: "#FB923C", title: "Software Engineer, Salesforce · Investor", bio: "Software engineer at Salesforce with roots at Howard University and Amherst College. Actively building and investing at the intersection of technology and innovation, with a focus on SaaS and fintech platforms.", checkSize: "$10K – $50K", tags: ["SaaS", "Fintech", "Tech", "Howard / Amherst"] },
+  { firstName: "Gianna", initials: "GT", color: "#F472B6", title: "Graduate Researcher, MIT CSAIL · Investor", bio: "Graduate researcher at MIT's Computer Science and Artificial Intelligence Laboratory. Combines deep technical expertise with strategic investment in frontier AI and deep tech ventures pushing the boundaries of what's possible.", checkSize: "$10K – $50K", tags: ["AI/ML", "Deep Tech", "MIT", "Research"] },
+  { firstName: "Ellis", initials: "EB", color: "#A78BFA", title: "Software Engineer, Google · Investor", bio: "Software engineer at Google and Tufts University alum. Organizer of JumboHack, bringing together 300+ developers from 25+ universities. Actively investing in early-stage technology companies while building at scale.", checkSize: "$10K – $50K", tags: ["Big Tech", "Early Stage", "Tufts", "Mountain View"] },
+  { firstName: "Michael", initials: "MB", color: "#38BDF8", title: "Investor & Technologist", bio: "Investor and technologist with a focus on scalable solutions and emerging technology platforms. Brings a builder's mindset to capital allocation and a sharp eye for high-potential early-stage ventures.", checkSize: "$10K – $50K", tags: ["Technology", "Scalable Solutions", "Growth"] },
+  { firstName: "Pascal", initials: "PN", color: "#34D399", title: "Software Engineer, Meta · Investor", bio: "Software engineer at Meta and Princeton University computer science alum with prior experience at Microsoft and Google. Investing in next-generation technology ventures, leveraging deep technical knowledge to identify high-potential opportunities.", checkSize: "$10K – $30K", tags: ["Meta", "Princeton", "Big Tech", "Next-Gen Tech"] },
+  { firstName: "Herbert", initials: "HB", color: "#FBBF24", title: "Software Engineer, Duolingo · Investor", bio: "Software engineer at Duolingo and Northwestern University alum from the McCormick School of Engineering. Originally from Ghana, bringing a global perspective to technology investing and a passion for innovation in software and education technology.", checkSize: "$10K – $30K", tags: ["Engineering", "Duolingo", "Northwestern", "Global"] }
+];
+
+const grid = document.getElementById('investorGrid');
+const select = document.getElementById('investorSelect');
+const previewEl = document.getElementById('investorPreview');
+
+investors.forEach((inv, i) => {
+  const opt = document.createElement('option');
+  opt.value = inv.firstName;
+  opt.textContent = inv.firstName + '  —  ' + inv.checkSize;
+  select.appendChild(opt);
+
+  const card = document.createElement('div');
+  card.className = 'investor-card fade-in';
+  card.style.transitionDelay = `${i * 0.08}s`;
+  card.innerHTML = `
+    <div class="card-top">
+      <div class="avatar">
+        <div class="avatar-initials" style="background: ${inv.color}18; color: ${inv.color}">${inv.initials}</div>
+        <div class="avatar-ring"></div>
+      </div>
+      <div class="card-info">
+        <h3>${inv.firstName}</h3>
+        <div class="title">${inv.title}</div>
+      </div>
+    </div>
+    <div class="card-bio">${inv.bio}</div>
+    <div class="card-check-size">
+      <div class="check-badge"><span class="label">Check Size</span>${inv.checkSize}</div>
+    </div>
+    <div class="card-details">${inv.tags.map(t => `<span class="detail-chip">${t}</span>`).join('')}</div>
+    <div class="card-footer">
+      <div class="status"><span class="status-dot"></span> Actively investing</div>
+      <button class="btn-book-call" onclick="openModal(${i})">Book a Call</button>
+    </div>
+  `;
+  grid.appendChild(card);
+});
+
+select.addEventListener('change', function() { updatePreview(this.value); });
+
+function updatePreview(name) {
+  if (!name) { previewEl.innerHTML = ''; return; }
+  const inv = investors.find(i => i.firstName === name);
+  if (!inv) { previewEl.innerHTML = ''; return; }
+  previewEl.innerHTML = `<div class="modal-investor-preview"><div class="mini-avatar" style="background: ${inv.color}18; color: ${inv.color}">${inv.initials}</div><div class="mini-info"><h4>${inv.firstName}</h4><p>${inv.title.split('·')[0].trim()}</p></div></div>`;
+}
+
+function openModal(investorIdx) {
+  document.getElementById('bookingModal').classList.add('active');
+  document.body.style.overflow = 'hidden';
+  if (investorIdx !== undefined && investorIdx !== null) {
+    select.value = investors[investorIdx].firstName;
+    updatePreview(investors[investorIdx].firstName);
+  }
+}
+
+function closeModal() {
+  document.getElementById('bookingModal').classList.remove('active');
+  document.body.style.overflow = '';
+  document.getElementById('formState').style.display = '';
+  document.getElementById('successState').classList.remove('active');
+  document.getElementById('errorMsg').style.display = 'none';
+  previewEl.innerHTML = '';
+  select.value = '';
+}
+
+document.getElementById('bookingModal').addEventListener('click', function(e) { if (e.target === this) closeModal(); });
+
+let formSubmitting = false;
+
+function handleSubmit() {
+  const btn = document.getElementById('submitBtn');
+  const errorMsg = document.getElementById('errorMsg');
+  errorMsg.style.display = 'none';
+
+  const selectedInvestor = select.value;
+  const firstName = document.getElementById('firstName').value.trim();
+  const lastName = document.getElementById('lastName').value.trim();
+  const email = document.getElementById('email').value.trim();
+  const company = document.getElementById('company').value.trim();
+  const pitch = document.getElementById('pitch').value.trim();
+
+  // Validate
+  let valid = true;
+  if (!selectedInvestor) { select.style.borderColor = '#F87171'; setTimeout(() => select.style.borderColor = '', 2000); valid = false; }
+  ['firstName', 'lastName', 'email', 'company'].forEach(id => {
+    const el = document.getElementById(id);
+    if (!el.value.trim()) { el.style.borderColor = '#F87171'; setTimeout(() => el.style.borderColor = '', 2000); valid = false; }
+  });
+
+  if (!valid) { errorMsg.textContent = 'Please fill in all required fields.'; errorMsg.style.display = 'block'; return; }
+
+  // Email validation
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { errorMsg.textContent = 'Please enter a valid email address.'; errorMsg.style.display = 'block'; return; }
+
+  btn.disabled = true;
+  btn.textContent = 'Submitting...';
+  formSubmitting = true;
+
+  // Send via FormSubmit.co
+  const formData = new FormData();
+  formData.append('Investor', selectedInvestor);
+  formData.append('First Name', firstName);
+  formData.append('Last Name', lastName);
+  formData.append('Email', email);
+  formData.append('Company / Venture', company);
+  formData.append('Pitch', pitch || '(not provided)');
+  formData.append('_subject', 'New Call Booking Request: ' + firstName + ' ' + lastName + ' → ' + selectedInvestor);
+  formData.append('_captcha', 'false');
+  formData.append('_template', 'table');
+
+  fetch('https://formsubmit.co/ajax/adonaiaddo1@gmail.com', {
+    method: 'POST',
+    headers: { 'Accept': 'application/json' },
+    body: formData
+  })
+  .then(response => response.json())
+  .then(data => {
+    document.getElementById('formState').style.display = 'none';
+    document.getElementById('successState').classList.add('active');
+    btn.disabled = false;
+    btn.textContent = 'Submit Booking Request';
+    // Reset form
+    document.getElementById('firstName').value = '';
+    document.getElementById('lastName').value = '';
+    document.getElementById('email').value = '';
+    document.getElementById('company').value = '';
+    document.getElementById('pitch').value = '';
+  })
+  .catch(error => {
+    errorMsg.textContent = 'Something went wrong. Please try again.';
+    errorMsg.style.display = 'block';
+    btn.disabled = false;
+    btn.textContent = 'Submit Booking Request';
+  });
+}
+
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
+}, { threshold: 0.1 });
+document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>
