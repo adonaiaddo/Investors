@@ -115,6 +115,8 @@
   .check-badge { display: inline-flex; align-items: center; gap: 7px; padding: 7px 16px; background: rgba(201,168,76,0.08); border: 1px solid rgba(201,168,76,0.2); border-radius: 100px; font-family: var(--mono); font-size: 13px; color: var(--accent-light); letter-spacing: 0.5px; }
   .check-badge .label { font-family: var(--sans); font-size: 11px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; }
 
+  .card-feedback { padding: 0 28px 20px; font-size: 12px; color: var(--green); display: flex; align-items: center; gap: 7px; letter-spacing: 0.3px; }
+
   .card-details { padding: 0 28px 24px; display: flex; flex-wrap: wrap; gap: 8px; }
   .detail-chip { font-size: 11px; padding: 6px 14px; background: var(--surface-2); border: 1px solid var(--border); border-radius: 100px; color: var(--text-muted); letter-spacing: 0.3px; }
 
@@ -133,9 +135,14 @@
   .step h3 { font-size: 16px; font-weight: 600; margin-bottom: 12px; letter-spacing: 0.5px; }
   .step p { font-size: 14px; color: var(--text-muted); line-height: 1.7; max-width: 280px; margin: 0 auto; }
 
-  .pricing-card { max-width: 520px; margin: 0 auto; background: var(--surface); border: 1px solid var(--accent-dim); border-radius: 4px; padding: 56px 48px; text-align: center; position: relative; overflow: hidden; }
-  .pricing-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(to right, transparent, var(--accent), transparent); }
-  .pricing-card::after { content: ''; position: absolute; top: -100px; left: 50%; transform: translateX(-50%); width: 400px; height: 400px; background: radial-gradient(circle, rgba(201,168,76,0.04) 0%, transparent 70%); pointer-events: none; }
+  .pricing-card { max-width: 520px; background: var(--surface); border: 1px solid var(--border); border-radius: 4px; padding: 56px 48px; text-align: center; position: relative; overflow: hidden; }
+  .pricing-card.featured { border-color: var(--accent-dim); }
+  .pricing-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(to right, transparent, var(--border-light), transparent); }
+  .pricing-card.featured::before { background: linear-gradient(to right, transparent, var(--accent), transparent); }
+  .pricing-card::after { content: ''; position: absolute; top: -100px; left: 50%; transform: translateX(-50%); width: 400px; height: 400px; background: radial-gradient(circle, rgba(201,168,76,0.02) 0%, transparent 70%); pointer-events: none; }
+  .pricing-card.featured::after { background: radial-gradient(circle, rgba(201,168,76,0.04) 0%, transparent 70%); }
+  .pricing-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 32px; max-width: 960px; margin: 0 auto; }
+  .pricing-badge { display: inline-block; font-family: var(--mono); font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--bg); background: var(--accent); padding: 5px 14px; border-radius: 100px; margin-bottom: 20px; }
   .pricing-label { font-family: var(--mono); font-size: 11px; letter-spacing: 4px; text-transform: uppercase; color: var(--accent); margin-bottom: 24px; }
   .pricing-amount { font-family: var(--serif); font-size: 72px; font-weight: 300; color: var(--text); line-height: 1; }
   .pricing-amount span { font-size: 28px; color: var(--text-muted); vertical-align: super; }
@@ -201,6 +208,7 @@
     .steps { grid-template-columns: 1fr; gap: 40px; }
     .steps::before { display: none; }
     .pricing-card { padding: 40px 28px; }
+    .pricing-grid { grid-template-columns: 1fr; }
     .modal-body { padding: 24px; }
     .form-row { grid-template-columns: 1fr; }
     .modal-investor-preview { margin: 24px 24px 0; }
@@ -222,11 +230,11 @@
 <section class="hero">
   <div class="hero-tag">Direct Access to Active Investors</div>
   <h1>Book a call with the investors shaping <em>tomorrow</em></h1>
-  <p class="hero-sub">Browse verified investor profiles, explore their focus areas and check sizes, then book a one-on-one call to pitch your venture directly.</p>
+  <p class="hero-sub">Browse verified investor profiles, explore their focus areas and check sizes, then book a one-on-one call to pitch your venture. Every call includes honest, actionable feedback — whether or not the investor decides to fund.</p>
   <div class="hero-stats">
     <div class="hero-stat"><h3>9</h3><p>Active investors</p></div>
     <div class="hero-stat"><h3>$10K–100K</h3><p>Check sizes</p></div>
-    <div class="hero-stat"><h3>$500</h3><p>Per call booking</p></div>
+    <div class="hero-stat"><h3>$499</h3><p>Per call booking</p></div>
   </div>
   <div class="scroll-indicator"><span>Explore</span><div class="scroll-line"></div></div>
 </section>
@@ -235,7 +243,7 @@
   <div class="section-header">
     <span class="section-tag">Our Investors</span>
     <h2>Meet the Network</h2>
-    <p>Browse full investor profiles below. When you find the right fit, book a $500 one-on-one call to pitch your venture directly.</p>
+    <p>Browse full investor profiles below. Every call guarantees real feedback on your venture — funded or not. Book a one-on-one call starting at $499.</p>
   </div>
   <div class="investors-grid" id="investorGrid"></div>
 </section>
@@ -248,28 +256,46 @@
   <div class="steps">
     <div class="step fade-in"><div class="step-num">1</div><h3>Browse Profiles</h3><p>Explore full investor profiles — backgrounds, focus areas, and check sizes — to find the right fit for your venture.</p></div>
     <div class="step fade-in"><div class="step-num">2</div><h3>Book Your Call</h3><p>Select an investor and submit your booking request. You'll receive a confirmation and scheduling link within 24 hours.</p></div>
-    <div class="step fade-in"><div class="step-num">3</div><h3>Pitch Directly</h3><p>Get a dedicated 30-minute one-on-one call to present your opportunity and discuss potential investment.</p></div>
+    <div class="step fade-in"><div class="step-num">3</div><h3>Pitch &amp; Get Feedback</h3><p>Get a dedicated 30-minute call to present your opportunity. Every investor provides honest, actionable feedback — whether or not they decide to invest.</p></div>
   </div>
 </section>
 
 <section id="pricing">
   <div class="section-header">
     <span class="section-tag">Pricing</span>
-    <h2>One Fee. Direct Access.</h2>
+    <h2>Choose Your Access</h2>
+    <p>Every call includes guaranteed investor feedback on your venture — whether or not they decide to fund.</p>
   </div>
-  <div class="pricing-card fade-in">
-    <div class="pricing-label">Per Call Booking</div>
-    <div class="pricing-amount"><span>$</span>500</div>
-    <div class="pricing-period">per investor call</div>
-    <div class="pricing-features">
-      <div class="pricing-feature"><span class="check">✦</span> 30-minute one-on-one call</div>
-      <div class="pricing-feature"><span class="check">✦</span> Direct access to the investor</div>
-      <div class="pricing-feature"><span class="check">✦</span> Pitch your venture live</div>
-      <div class="pricing-feature"><span class="check">✦</span> Scheduling within 24 hours</div>
-      <div class="pricing-feature"><span class="check">✦</span> Follow-up intro if there's mutual interest</div>
-      <div class="pricing-feature"><span class="check">✦</span> Check sizes from $10K – $100K</div>
+  <div class="pricing-grid">
+    <div class="pricing-card fade-in">
+      <div class="pricing-label">Pay Per Call</div>
+      <div class="pricing-amount"><span>$</span>499</div>
+      <div class="pricing-period">per investor call</div>
+      <div class="pricing-features">
+        <div class="pricing-feature"><span class="check">✦</span> 30-minute one-on-one call</div>
+        <div class="pricing-feature"><span class="check">✦</span> Direct access to the investor</div>
+        <div class="pricing-feature"><span class="check">✦</span> Guaranteed feedback on your venture</div>
+        <div class="pricing-feature"><span class="check">✦</span> Scheduling within 24 hours</div>
+        <div class="pricing-feature"><span class="check">✦</span> Follow-up intro if there's mutual interest</div>
+        <div class="pricing-feature"><span class="check">✦</span> Check sizes from $10K – $100K</div>
+      </div>
+      <button class="btn-primary" onclick="openModal()">Book a Call — $499</button>
     </div>
-    <button class="btn-primary" onclick="openModal()">Book a Call — $500</button>
+    <div class="pricing-card featured fade-in">
+      <div class="pricing-badge">Best Value</div>
+      <div class="pricing-label">Monthly Membership</div>
+      <div class="pricing-amount"><span>$</span>199</div>
+      <div class="pricing-period">per month</div>
+      <div class="pricing-features">
+        <div class="pricing-feature"><span class="check">✦</span> 1 free investor call per month</div>
+        <div class="pricing-feature"><span class="check">✦</span> Additional calls at $299 each</div>
+        <div class="pricing-feature"><span class="check">✦</span> Guaranteed feedback on every call</div>
+        <div class="pricing-feature"><span class="check">✦</span> Access to 1 monthly community event</div>
+        <div class="pricing-feature"><span class="check">✦</span> Weekly progress updates from the community</div>
+        <div class="pricing-feature"><span class="check">✦</span> Check sizes from $10K – $100K</div>
+      </div>
+      <button class="btn-primary" onclick="openModal()">Subscribe — $199/mo</button>
+    </div>
   </div>
 </section>
 
@@ -285,7 +311,7 @@
     <div id="formState">
       <div class="modal-header">
         <h2>Book a Call</h2>
-        <p>Fill in your details and select an investor. We'll send you a scheduling link within 24 hours.</p>
+        <p>Fill in your details and select an investor. We'll send you a scheduling link within 24 hours. Every call includes guaranteed feedback on your venture.</p>
       </div>
       <div id="investorPreview"></div>
       <div class="modal-body">
@@ -354,6 +380,7 @@ investors.forEach((inv, i) => {
     <div class="card-check-size">
       <div class="check-badge"><span class="label">Check Size</span>${inv.checkSize}</div>
     </div>
+    <div class="card-feedback">✓ Guaranteed feedback on every call</div>
     <div class="card-details">${inv.tags.map(t => `<span class="detail-chip">${t}</span>`).join('')}</div>
     <div class="card-footer">
       <div class="status"><span class="status-dot"></span> Actively investing</div>
