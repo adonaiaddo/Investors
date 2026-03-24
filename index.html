@@ -190,6 +190,11 @@
 
   .error-msg { color: var(--red); font-size: 13px; text-align: center; margin-top: 12px; display: none; }
 
+  .investor-cta { padding: 32px 48px; text-align: center; border-top: 1px solid var(--border); }
+  .investor-cta p { font-size: 13px; color: var(--text-dim); letter-spacing: 0.3px; }
+  .investor-cta a { color: var(--text-muted); text-decoration: none; transition: color 0.3s; }
+  .investor-cta a:hover { color: var(--accent); }
+
   footer { padding: 48px; border-top: 1px solid var(--border); text-align: center; }
   footer p { font-size: 13px; color: var(--text-dim); letter-spacing: 0.5px; }
   footer .footer-logo { font-family: var(--serif); font-size: 18px; color: var(--accent); letter-spacing: 6px; text-transform: uppercase; margin-bottom: 12px; font-weight: 300; }
@@ -223,18 +228,18 @@
     <a href="#investors">Investors</a>
     <a href="#how">How It Works</a>
     <a href="#pricing">Pricing</a>
-    <a href="#" class="nav-cta" onclick="openModal()">Book a Call</a>
+    <a href="#" class="nav-cta" onclick="openModal()">Request a Call</a>
   </div>
 </nav>
 
 <section class="hero">
   <div class="hero-tag">Direct Access to Active Investors</div>
-  <h1>Book a call with the investors shaping <em>tomorrow</em></h1>
-  <p class="hero-sub">Browse verified investor profiles, explore their focus areas and check sizes, then book a one-on-one call to pitch your venture. Every call includes honest, actionable feedback — whether or not the investor decides to fund.</p>
+  <h1>Request a call with the investors shaping <em>tomorrow</em></h1>
+  <p class="hero-sub">Browse verified investor profiles, explore their focus areas and check sizes, then request a one-on-one call to pitch your venture. Every call includes honest, actionable feedback — whether or not the investor decides to fund.</p>
   <div class="hero-stats">
     <div class="hero-stat"><h3>9</h3><p>Active investors</p></div>
     <div class="hero-stat"><h3>$10K–100K</h3><p>Check sizes</p></div>
-    <div class="hero-stat"><h3>$499</h3><p>Per call booking</p></div>
+    <div class="hero-stat"><h3>$499</h3><p>Per call request</p></div>
   </div>
   <div class="scroll-indicator"><span>Explore</span><div class="scroll-line"></div></div>
 </section>
@@ -243,7 +248,7 @@
   <div class="section-header">
     <span class="section-tag">Our Investors</span>
     <h2>Meet the Network</h2>
-    <p>Browse full investor profiles below. Every call guarantees real feedback on your venture — funded or not. Book a one-on-one call starting at $499.</p>
+    <p>Browse full investor profiles below. Every call guarantees real feedback on your venture — funded or not. Request a one-on-one call starting at $499.</p>
   </div>
   <div class="investors-grid" id="investorGrid"></div>
 </section>
@@ -255,7 +260,7 @@
   </div>
   <div class="steps">
     <div class="step fade-in"><div class="step-num">1</div><h3>Browse Profiles</h3><p>Explore full investor profiles — backgrounds, focus areas, and check sizes — to find the right fit for your venture.</p></div>
-    <div class="step fade-in"><div class="step-num">2</div><h3>Book Your Call</h3><p>Select an investor and submit your booking request. You'll receive a confirmation and scheduling link within 24 hours.</p></div>
+    <div class="step fade-in"><div class="step-num">2</div><h3>Submit Your Request</h3><p>Select an investor and submit your call request. We'll review it and send you a confirmation and scheduling link within 24 hours.</p></div>
     <div class="step fade-in"><div class="step-num">3</div><h3>Pitch &amp; Get Feedback</h3><p>Get a dedicated 30-minute call to present your opportunity. Every investor provides honest, actionable feedback — whether or not they decide to invest.</p></div>
   </div>
 </section>
@@ -279,7 +284,7 @@
         <div class="pricing-feature"><span class="check">✦</span> Follow-up intro if there's mutual interest</div>
         <div class="pricing-feature"><span class="check">✦</span> Check sizes from $10K – $100K</div>
       </div>
-      <button class="btn-primary" onclick="openModal()">Book a Call — $499</button>
+      <button class="btn-primary" onclick="openModal()">Request a Call — $499</button>
     </div>
     <div class="pricing-card featured fade-in">
       <div class="pricing-badge">Best Value</div>
@@ -290,14 +295,18 @@
         <div class="pricing-feature"><span class="check">✦</span> 1 free investor call per month</div>
         <div class="pricing-feature"><span class="check">✦</span> Additional calls at $299 each</div>
         <div class="pricing-feature"><span class="check">✦</span> Guaranteed feedback on every call</div>
-        <div class="pricing-feature"><span class="check">✦</span> Access to 1 monthly community event</div>
+        <div class="pricing-feature"><span class="check">✦</span> Access to our monthly community event</div>
         <div class="pricing-feature"><span class="check">✦</span> Weekly progress updates from the community</div>
         <div class="pricing-feature"><span class="check">✦</span> Check sizes from $10K – $100K</div>
       </div>
-      <button class="btn-primary" onclick="openModal()">Subscribe — $199/mo</button>
+      <button class="btn-primary" onclick="openSubscribeModal()">Request Membership — $199/mo</button>
     </div>
   </div>
 </section>
+
+<div class="investor-cta">
+  <p>Are you an investor? <a href="#" onclick="openInvestorModal(); return false;">Apply to join our network →</a></p>
+</div>
 
 <footer>
   <div class="footer-logo">VAULT</div>
@@ -310,8 +319,8 @@
     <button class="modal-close" onclick="closeModal()">&times;</button>
     <div id="formState">
       <div class="modal-header">
-        <h2>Book a Call</h2>
-        <p>Fill in your details and select an investor. We'll send you a scheduling link within 24 hours. Every call includes guaranteed feedback on your venture.</p>
+        <h2>Request a Call</h2>
+        <p>Fill in your details and select an investor. We'll review your request and send you a scheduling link within 24 hours. Every call includes guaranteed feedback on your venture.</p>
       </div>
       <div id="investorPreview"></div>
       <div class="modal-body">
@@ -320,13 +329,13 @@
           <select id="investorSelect"><option value="">Choose an investor...</option></select>
         </div>
         <div class="form-row">
-          <div class="form-group"><label>First Name</label><input type="text" id="firstName" placeholder="James"></div>
-          <div class="form-group"><label>Last Name</label><input type="text" id="lastName" placeholder="Chen"></div>
+          <div class="form-group"><label>First Name</label><input type="text" id="firstName" placeholder="Steve"></div>
+          <div class="form-group"><label>Last Name</label><input type="text" id="lastName" placeholder="Jobs"></div>
         </div>
-        <div class="form-group"><label>Email Address</label><input type="email" id="email" placeholder="james@company.com"></div>
+        <div class="form-group"><label>Email Address</label><input type="email" id="email" placeholder="sjobs@apple.com"></div>
         <div class="form-group"><label>Company / Venture</label><input type="text" id="company" placeholder="Your startup or venture name"></div>
         <div class="form-group"><label>Brief Pitch</label><textarea id="pitch" placeholder="What does your venture do? What stage are you at? What are you raising?"></textarea></div>
-        <button class="btn-submit" id="submitBtn" onclick="handleSubmit()">Submit Booking Request</button>
+        <button class="btn-submit" id="submitBtn" onclick="handleSubmit()">Submit Call Request</button>
         <div class="error-msg" id="errorMsg">Please fill in all required fields.</div>
       </div>
     </div>
@@ -334,6 +343,73 @@
       <div class="success-icon">✓</div>
       <h2>Request Submitted</h2>
       <p>Thanks for your interest! We'll review your request and send a scheduling link to your email within 24 hours.</p>
+    </div>
+  </div>
+</div>
+
+<!-- SUBSCRIBE MODAL -->
+<div class="modal-overlay" id="subscribeModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeSubscribeModal()">&times;</button>
+    <div id="subFormState">
+      <div class="modal-header">
+        <h2>Subscribe to Vault</h2>
+        <p>$199/month — includes 1 free investor call, $299 additional calls, access to our monthly community event, and weekly progress updates. Submit your request and we'll be in touch within 24 hours.</p>
+      </div>
+      <div class="modal-body">
+        <div class="form-row">
+          <div class="form-group"><label>First Name</label><input type="text" id="subFirstName" placeholder="Steve"></div>
+          <div class="form-group"><label>Last Name</label><input type="text" id="subLastName" placeholder="Jobs"></div>
+        </div>
+        <div class="form-group"><label>Email Address</label><input type="email" id="subEmail" placeholder="sjobs@apple.com"></div>
+        <div class="form-group"><label>Company / Venture</label><input type="text" id="subCompany" placeholder="Your startup or venture name"></div>
+        <div class="form-group"><label>What are you working on?</label><textarea id="subAbout" placeholder="Tell us briefly about your venture and what stage you're at."></textarea></div>
+        <button class="btn-submit" id="subSubmitBtn" onclick="handleSubscribeSubmit()">Submit Membership Request</button>
+        <div class="error-msg" id="subErrorMsg">Please fill in all required fields.</div>
+      </div>
+    </div>
+    <div class="success-state" id="subSuccessState">
+      <div class="success-icon">✓</div>
+      <h2>Request Received</h2>
+      <p>We'll review your membership request and reach out within 24 hours to get you set up with your first investor call.</p>
+    </div>
+  </div>
+</div>
+
+<!-- INVESTOR SIGNUP MODAL -->
+<div class="modal-overlay" id="investorModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeInvestorModal()">&times;</button>
+    <div id="invFormState">
+      <div class="modal-header">
+        <h2>Join as an Investor</h2>
+        <p>Apply to join the Vault investor network. We'll review your application and get back to you shortly.</p>
+      </div>
+      <div class="modal-body">
+        <div class="form-row">
+          <div class="form-group"><label>First Name</label><input type="text" id="invFirstName" placeholder="Eleanor"></div>
+          <div class="form-group"><label>Last Name</label><input type="text" id="invLastName" placeholder="Vance"></div>
+        </div>
+        <div class="form-group"><label>Email Address</label><input type="email" id="invEmail" placeholder="eleanor@fund.com"></div>
+        <div class="form-group"><label>Background</label><textarea id="invBackground" placeholder="Tell us about your professional background, investment experience, and areas of expertise."></textarea></div>
+        <div class="form-group"><label>Check Size Range</label>
+          <select id="invCheckSize">
+            <option value="">Select a range...</option>
+            <option value="$10K – $30K">$10K – $30K</option>
+            <option value="$10K – $50K">$10K – $50K</option>
+            <option value="$50K – $100K">$50K – $100K</option>
+            <option value="$100K+">$100K+</option>
+          </select>
+        </div>
+        <div class="form-group"><label>Investment Focus (optional)</label><input type="text" id="invFocus" placeholder="e.g. AI/ML, Fintech, Climate Tech, SaaS"></div>
+        <button class="btn-submit" id="invSubmitBtn" onclick="handleInvestorSubmit()">Submit Application</button>
+        <div class="error-msg" id="invErrorMsg">Please fill in all required fields.</div>
+      </div>
+    </div>
+    <div class="success-state" id="invSuccessState">
+      <div class="success-icon">✓</div>
+      <h2>Application Received</h2>
+      <p>Thanks for your interest in joining the Vault network. We'll review your application and be in touch soon.</p>
     </div>
   </div>
 </div>
@@ -384,7 +460,7 @@ investors.forEach((inv, i) => {
     <div class="card-details">${inv.tags.map(t => `<span class="detail-chip">${t}</span>`).join('')}</div>
     <div class="card-footer">
       <div class="status"><span class="status-dot"></span> Actively investing</div>
-      <button class="btn-book-call" onclick="openModal(${i})">Book a Call</button>
+      <button class="btn-book-call" onclick="openModal(${i})">Request a Call</button>
     </div>
   `;
   grid.appendChild(card);
@@ -493,6 +569,161 @@ const observer = new IntersectionObserver((entries) => {
   entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
 }, { threshold: 0.1 });
 document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+// ─── SUBSCRIBE MODAL ───
+function openSubscribeModal() {
+  document.getElementById('subscribeModal').classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeSubscribeModal() {
+  document.getElementById('subscribeModal').classList.remove('active');
+  document.body.style.overflow = '';
+  document.getElementById('subFormState').style.display = '';
+  document.getElementById('subSuccessState').classList.remove('active');
+  document.getElementById('subErrorMsg').style.display = 'none';
+}
+
+document.getElementById('subscribeModal').addEventListener('click', function(e) { if (e.target === this) closeSubscribeModal(); });
+
+function handleSubscribeSubmit() {
+  const btn = document.getElementById('subSubmitBtn');
+  const errorMsg = document.getElementById('subErrorMsg');
+  errorMsg.style.display = 'none';
+
+  const firstName = document.getElementById('subFirstName').value.trim();
+  const lastName = document.getElementById('subLastName').value.trim();
+  const email = document.getElementById('subEmail').value.trim();
+  const company = document.getElementById('subCompany').value.trim();
+  const about = document.getElementById('subAbout').value.trim();
+
+  let valid = true;
+  ['subFirstName', 'subLastName', 'subEmail', 'subCompany'].forEach(id => {
+    const el = document.getElementById(id);
+    if (!el.value.trim()) { el.style.borderColor = '#F87171'; setTimeout(() => el.style.borderColor = '', 2000); valid = false; }
+  });
+
+  if (!valid) { errorMsg.textContent = 'Please fill in all required fields.'; errorMsg.style.display = 'block'; return; }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { errorMsg.textContent = 'Please enter a valid email address.'; errorMsg.style.display = 'block'; return; }
+
+  btn.disabled = true;
+  btn.textContent = 'Submitting...';
+
+  const formData = new FormData();
+  formData.append('Type', 'Monthly Subscription ($199/mo)');
+  formData.append('First Name', firstName);
+  formData.append('Last Name', lastName);
+  formData.append('Email', email);
+  formData.append('Company / Venture', company);
+  formData.append('About', about || '(not provided)');
+  formData.append('_subject', 'New Subscription Request: ' + firstName + ' ' + lastName);
+  formData.append('_captcha', 'false');
+  formData.append('_template', 'table');
+
+  fetch('https://formsubmit.co/ajax/adonaiaddo1@gmail.com', {
+    method: 'POST',
+    headers: { 'Accept': 'application/json' },
+    body: formData
+  })
+  .then(response => response.json())
+  .then(data => {
+    document.getElementById('subFormState').style.display = 'none';
+    document.getElementById('subSuccessState').classList.add('active');
+    btn.disabled = false;
+    btn.textContent = 'Start Membership — $199/mo';
+    document.getElementById('subFirstName').value = '';
+    document.getElementById('subLastName').value = '';
+    document.getElementById('subEmail').value = '';
+    document.getElementById('subCompany').value = '';
+    document.getElementById('subAbout').value = '';
+  })
+  .catch(error => {
+    errorMsg.textContent = 'Something went wrong. Please try again.';
+    errorMsg.style.display = 'block';
+    btn.disabled = false;
+    btn.textContent = 'Start Membership — $199/mo';
+  });
+}
+
+// ─── INVESTOR SIGNUP MODAL ───
+function openInvestorModal() {
+  document.getElementById('investorModal').classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeInvestorModal() {
+  document.getElementById('investorModal').classList.remove('active');
+  document.body.style.overflow = '';
+  document.getElementById('invFormState').style.display = '';
+  document.getElementById('invSuccessState').classList.remove('active');
+  document.getElementById('invErrorMsg').style.display = 'none';
+}
+
+document.getElementById('investorModal').addEventListener('click', function(e) { if (e.target === this) closeInvestorModal(); });
+
+function handleInvestorSubmit() {
+  const btn = document.getElementById('invSubmitBtn');
+  const errorMsg = document.getElementById('invErrorMsg');
+  errorMsg.style.display = 'none';
+
+  const firstName = document.getElementById('invFirstName').value.trim();
+  const lastName = document.getElementById('invLastName').value.trim();
+  const email = document.getElementById('invEmail').value.trim();
+  const background = document.getElementById('invBackground').value.trim();
+  const checkSize = document.getElementById('invCheckSize').value;
+  const focus = document.getElementById('invFocus').value.trim();
+
+  let valid = true;
+  ['invFirstName', 'invLastName', 'invEmail'].forEach(id => {
+    const el = document.getElementById(id);
+    if (!el.value.trim()) { el.style.borderColor = '#F87171'; setTimeout(() => el.style.borderColor = '', 2000); valid = false; }
+  });
+  if (!background) { document.getElementById('invBackground').style.borderColor = '#F87171'; setTimeout(() => document.getElementById('invBackground').style.borderColor = '', 2000); valid = false; }
+  if (!checkSize) { document.getElementById('invCheckSize').style.borderColor = '#F87171'; setTimeout(() => document.getElementById('invCheckSize').style.borderColor = '', 2000); valid = false; }
+
+  if (!valid) { errorMsg.textContent = 'Please fill in all required fields.'; errorMsg.style.display = 'block'; return; }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { errorMsg.textContent = 'Please enter a valid email address.'; errorMsg.style.display = 'block'; return; }
+
+  btn.disabled = true;
+  btn.textContent = 'Submitting...';
+
+  const formData = new FormData();
+  formData.append('Type', 'Investor Application');
+  formData.append('First Name', firstName);
+  formData.append('Last Name', lastName);
+  formData.append('Email', email);
+  formData.append('Background', background);
+  formData.append('Check Size Range', checkSize);
+  formData.append('Investment Focus', focus || '(not provided)');
+  formData.append('_subject', 'New Investor Application: ' + firstName + ' ' + lastName);
+  formData.append('_captcha', 'false');
+  formData.append('_template', 'table');
+
+  fetch('https://formsubmit.co/ajax/adonaiaddo1@gmail.com', {
+    method: 'POST',
+    headers: { 'Accept': 'application/json' },
+    body: formData
+  })
+  .then(response => response.json())
+  .then(data => {
+    document.getElementById('invFormState').style.display = 'none';
+    document.getElementById('invSuccessState').classList.add('active');
+    btn.disabled = false;
+    btn.textContent = 'Submit Application';
+    document.getElementById('invFirstName').value = '';
+    document.getElementById('invLastName').value = '';
+    document.getElementById('invEmail').value = '';
+    document.getElementById('invBackground').value = '';
+    document.getElementById('invCheckSize').value = '';
+    document.getElementById('invFocus').value = '';
+  })
+  .catch(error => {
+    errorMsg.textContent = 'Something went wrong. Please try again.';
+    errorMsg.style.display = 'block';
+    btn.disabled = false;
+    btn.textContent = 'Submit Application';
+  });
+}
 </script>
 
 </body>
